@@ -1,9 +1,24 @@
 # ATCgraph
 
-Live ATC24 radar stack with:
+ATCgraph is a full live-traffic website for ATC24:
 
-- **Backend**: Node + Express + WebSocket bridge to ATC24
-- **Frontend**: React dashboard that overlays live ATC24 aircraft on a custom radar map image
+- **Single backend server** with ATC24 source websocket bridge
+- **Frontend website** served by the backend when built
+- **Live radar map** using your provided custom chart image with aircraft overlays
+- **API endpoints** for aircraft, flight plans, controllers, ATIS, and source status
+
+## Backend features
+
+- Source bridge: `wss://24data.ptfs.app/wss`
+- Client websocket: `ws://<host>/ws`
+- REST API:
+  - `GET /health`
+  - `GET /api/state`
+  - `GET /api/status`
+  - `GET /api/aircraft`
+  - `GET /api/flightplans`
+  - `GET /api/controllers`
+  - `GET /api/atis`
 
 ## Run backend
 
@@ -13,9 +28,9 @@ npm install
 npm run dev
 ```
 
-Backend listens on `http://localhost:8080` and websocket endpoint `ws://localhost:8080/ws`.
+Backend listens on `http://localhost:8080`.
 
-## Run frontend
+## Run frontend (dev)
 
 ```bash
 cd frontend
@@ -23,8 +38,15 @@ npm install
 npm run dev
 ```
 
-If backend runs elsewhere, set:
+## Build frontend and serve from backend
 
 ```bash
-VITE_BACKEND_WS_URL=ws://host:port/ws
+cd frontend
+npm install
+npm run build
+
+cd ../backend
+npm run dev
 ```
+
+The backend will serve `frontend/dist` automatically when present.

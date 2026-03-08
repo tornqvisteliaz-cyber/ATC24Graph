@@ -3,17 +3,29 @@
   font-family: Inter, system-ui, -apple-system, sans-serif;
 }
 
-body {
+html,
+body,
+#root {
   margin: 0;
-  background: radial-gradient(circle at top, #1b2a45, #0f1727 50%, #0a0f18);
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background: #0a0f18;
   color: #f5f7ff;
 }
 
+.app-layout {
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
 header {
-  padding: 1rem 1.25rem;
+  padding: 0.75rem 1rem;
   border-bottom: 1px solid #2e3c5e;
-  background: rgba(12, 20, 35, 0.88);
-  backdrop-filter: blur(10px);
+  background: rgba(12, 20, 35, 0.92);
 }
 
 h1 {
@@ -22,14 +34,20 @@ h1 {
 }
 
 .subtitle {
-  margin: 0.25rem 0 0.75rem;
+  margin: 0.2rem 0 0.5rem;
   color: #b7c8ef;
+}
+
+.status-row {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.9rem;
 }
 
 nav {
   display: flex;
   gap: 1rem;
-  margin-top: 0.75rem;
+  margin-top: 0.5rem;
 }
 
 a {
@@ -43,17 +61,20 @@ a.active {
 }
 
 main {
-  height: calc(100vh - 165px);
+  min-height: 0;
 }
 
 .panel {
   padding: 1rem;
+  height: 100%;
+  overflow: auto;
+  background: #0d1525;
 }
 
 table {
   width: 100%;
   border-collapse: collapse;
-  background: rgba(11, 18, 32, 0.65);
+  background: rgba(11, 18, 32, 0.8);
 }
 
 th,
@@ -68,7 +89,8 @@ td {
 }
 
 .disconnected,
-.connecting {
+.connecting,
+.error {
   color: #f5d970;
 }
 
@@ -86,68 +108,43 @@ input {
   color: #fff;
 }
 
-.radar-shell {
+.radar-fullscreen-wrap {
   height: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-  padding: 0.75rem;
-}
-
-.radar-topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(10, 18, 33, 0.78);
-  border: 1px solid #2f436f;
-  border-radius: 10px;
-  padding: 0.75rem 1rem;
-}
-
-.radar-topbar h2 {
-  margin: 0;
-}
-
-.radar-topbar p {
-  margin: 0.25rem 0 0;
-  color: #9ab1df;
-}
-
-.open-link {
-  border: 1px solid #3f5f9b;
-  background: #12213d;
-  border-radius: 8px;
-  padding: 0.45rem 0.7rem;
-}
-
-.radar-content {
-  min-height: 0;
-  flex: 1;
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 0.75rem;
+  position: relative;
 }
 
 .radar-map {
   width: 100%;
   height: 100%;
-  border: 1px solid #2f436f;
-  border-radius: 10px;
+}
+
+.radar-map-fullscreen {
+  border: 0;
+  border-radius: 0;
+}
+
+.leaflet-container {
   background: #0d1527;
 }
 
-.radar-sidepanel {
+.radar-floating-panel {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 320px;
+  max-height: calc(100% - 1.5rem);
   border: 1px solid #2f436f;
   border-radius: 10px;
-  background: rgba(11, 18, 32, 0.8);
+  background: rgba(11, 18, 32, 0.84);
+  backdrop-filter: blur(8px);
   padding: 0.75rem;
   display: flex;
   flex-direction: column;
-  min-height: 0;
+  z-index: 500;
 }
 
-.radar-sidepanel h3 {
-  margin-top: 0;
+.radar-floating-panel h3 {
+  margin: 0 0 0.75rem;
 }
 
 .stats-grid {
@@ -204,17 +201,24 @@ input {
   font-weight: 700;
 }
 
-@media (max-width: 1024px) {
-  .radar-content {
-    grid-template-columns: 1fr;
-  }
-
-  .radar-sidepanel {
-    max-height: 35vh;
-  }
+.aircraft-icon {
+  font-size: 18px;
+  line-height: 20px;
+  transform-origin: center;
+  text-shadow: 0 0 8px rgba(0, 0, 0, 0.8);
 }
 
-.leaflet-container {
-  background: #0d1527;
-  border-radius: 10px;
+.aircraft-icon.normal {
+  color: #fff;
+}
+
+.aircraft-icon.emergency {
+  color: #ff3b30;
+}
+
+@media (max-width: 900px) {
+  .radar-floating-panel {
+    width: calc(100% - 1.5rem);
+    max-height: 38%;
+  }
 }

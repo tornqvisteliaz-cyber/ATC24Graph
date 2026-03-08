@@ -32,78 +32,77 @@ const RadarMap = ({ aircraft }) => {
   }, [aircraft]);
 
   return (
-    <section className="radar-shell">
-      <div className="radar-topbar">
-        <div>
-          <h2>ATCgraph Radar Map</h2>
-          <p>Using your provided custom chart image with live ATC24 aircraft overlays.</p>
-        </div>
-      </div>
+    <section className="radar-fullscreen-wrap">
+      <MapContainer
+        className="radar-map radar-map-fullscreen"
+        crs={CRS.Simple}
+        bounds={MAP_BOUNDS}
+        minZoom={-3}
+        maxZoom={2}
+        zoom={-1}
+      >
+        <ImageOverlay url={PROVIDED_MAP_URL} bounds={MAP_BOUNDS} />
 
-      <div className="radar-content">
-        <MapContainer className="radar-map" crs={CRS.Simple} bounds={MAP_BOUNDS} minZoom={-3} maxZoom={2} zoom={-1}>
-          <ImageOverlay url={PROVIDED_MAP_URL} bounds={MAP_BOUNDS} />
+        {aircraft.map((item) => {
+          const position = [item.position.nmY, item.position.nmX];
+          const radians = (item.heading * Math.PI) / 180;
+          const lineEnd = [
+            item.position.nmY + Math.cos(radians) * 2,
+            item.position.nmX + Math.sin(radians) * 2,
+          ];
 
-          {aircraft.map((item) => {
-            const position = [item.position.nmY, item.position.nmX];
-            const radians = (item.heading * Math.PI) / 180;
-            const lineEnd = [
-              item.position.nmY + Math.cos(radians) * 2,
-              item.position.nmX + Math.sin(radians) * 2,
-            ];
-
-            return (
-              <Marker key={item.callsign} position={position} icon={createAircraftIcon(item)}>
-                <Tooltip direction="top" offset={[0, -12]}>
-                  <div>
-                    <strong>{item.callsign}</strong>
-                    <br />
-                    {item.altitude} ft • {item.groundSpeed || item.speed} kt
-                  </div>
-                </Tooltip>
-                <Polyline
-                  positions={[position, lineEnd]}
-                  color={item.isEmergencyOccuring ? "#ff3b30" : "#ffffff"}
-                  weight={2}
-                />
-              </Marker>
-            );
-          })}
-        </MapContainer>
-
-        <aside className="radar-sidepanel">
-          <h3>ATCgraph Live Traffic</h3>
-          <div className="stats-grid">
-            <article>
-              <span>Total</span>
-              <strong>{stats.total}</strong>
-            </article>
-            <article>
-              <span>Airborne</span>
-              <strong>{stats.airborneCount}</strong>
-            </article>
-            <article>
-              <span>Emergency</span>
-              <strong className={stats.emergencyCount > 0 ? "danger" : ""}>{stats.emergencyCount}</strong>
-            </article>
-          </div>
-
-          <ul className="traffic-list">
-            {aircraft.slice(0, 25).map((item) => (
-              <li key={item.callsign}>
+          return (
+            <Marker key={item.callsign} position={position} icon={createAircraftIcon(item)}>
+              <Tooltip direction="top" offset={[0, -12]}>
                 <div>
                   <strong>{item.callsign}</strong>
-                  <span>{item.aircraftType || "Unknown type"}</span>
+                  <br />
+                  {item.altitude} ft • {item.groundSpeed || item.speed} kt
                 </div>
-                <div className={item.isEmergencyOccuring ? "danger" : ""}>
-                  {item.altitude} ft / {item.groundSpeed || item.speed} kt
-                </div>
-              </li>
-            ))}
-            {aircraft.length === 0 && <li className="empty">Waiting for live aircraft feed…</li>}
-          </ul>
-        </aside>
-      </div>
+              </Tooltip>
+              <Polyline
+                positions={[position, lineEnd]}
+                color={item.isEmergencyOccuring ? "#ff3b30" : "#ffffff"}
+                weight={2}
+              />
+            </Marker>
+          );
+        })}
+      </MapContainer>
+
+      <aside className="radar-floating-panel">
+        <h3>ATCgraph Live Traffic</h3>
+
+        <div className="stats-grid">
+          <article>
+            <span>Total</span>
+            <strong>{stats.total}</strong>
+          </article>
+          <article>
+            <span>Airborne</span>
+            <strong>{stats.airborneCount}</strong>
+          </article>
+          <article>
+            <span>Emergency</span>
+            <strong className={stats.emergencyCount > 0 ? "danger" : ""}>{stats.emergencyCount}</strong>
+          </article>
+        </div>
+
+        <ul className="traffic-list">
+          {aircraft.slice(0, 20).map((item) => (
+            <li key={item.callsign}>
+              <div>
+                <strong>{item.callsign}</strong>
+                <span>{item.aircraftType || "Unknown type"}</span>
+              </div>
+              <div className={item.isEmergencyOccuring ? "danger" : ""}>
+                {item.altitude} ft / {item.groundSpeed || item.speed} kt
+              </div>
+            </li>
+          ))}
+          {aircraft.length === 0 && <li className="empty">Waiting for live aircraft feed…</li>}
+        </ul>
+      </aside>
     </section>
   );
 };

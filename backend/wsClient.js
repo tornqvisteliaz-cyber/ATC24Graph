@@ -9,9 +9,18 @@ import {
 const SOURCE_WS_URL = "wss://24data.ptfs.app/wss";
 const RECONNECT_DELAY_MS = 5000;
 
-const connectToAtc24 = ({ onStateChange }) => {
+const connectToAtc24 = ({ onStateChange, onStatusChange }) => {
   let ws;
   let reconnectTimeout;
+
+  const emitStatus = (status, details = {}) => {
+    onStatusChange?.({
+      status,
+      sourceUrl: SOURCE_WS_URL,
+      ...details,
+      updatedAt: Date.now(),
+    });
+  };
 
   const scheduleReconnect = () => {
     clearTimeout(reconnectTimeout);
@@ -52,21 +61,25 @@ const connectToAtc24 = ({ onStateChange }) => {
   };
 
   const connect = () => {
+    emitStatus("connecting");
     ws = new WebSocket(SOURCE_WS_URL);
 
     ws.on("open", () => {
       console.log(`Connected to ATC24 source: ${SOURCE_WS_URL}`);
+      emitStatus("connected");
     });
 
     ws.on("message", handleMessage);
 
     ws.on("close", () => {
       console.warn("ATC24 source disconnected. Reconnecting...");
+      emitStatus("disconnected");
       scheduleReconnect();
     });
 
     ws.on("error", (error) => {
       console.error("ATC24 source websocket error", error);
+      emitStatus("error", { message: error?.message || "unknown" });
       ws.close();
     });
   };
@@ -75,7 +88,9 @@ const connectToAtc24 = ({ onStateChange }) => {
 
   return () => {
     clearTimeout(reconnectTimeout);
-    if (ws && ws.readyState === WebSocket.OPEN) {
+    emitStatus("stopped");
+
+    if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
       ws.close();
     }
   };
