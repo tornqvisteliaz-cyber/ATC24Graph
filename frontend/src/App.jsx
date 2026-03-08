@@ -13,7 +13,8 @@ const App = () => {
   return (
     <div className="app-layout">
       <header>
-        <h1>ATC24 Navigraph Style Radar</h1>
+        <h1>ATCgraph</h1>
+        <p className="subtitle">Live ATC24 traffic with AeroNav charts</p>
         <div>
           Socket: <span className={status}>{status}</span>
         </div>

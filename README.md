@@ -1,9 +1,9 @@
-# ATC24 Navigraph Style Radar
+# ATCgraph
 
 Live ATC24 radar stack with:
 
 - **Backend**: Node + Express + WebSocket bridge to ATC24
-- **Frontend**: React + Leaflet radar UI
+- **Frontend**: React dashboard that uses **AeroNav** (`https://aeronav.space/app`) as chart/map source
 
 ## Run backend
 
