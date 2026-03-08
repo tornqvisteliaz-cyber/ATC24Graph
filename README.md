@@ -3,7 +3,7 @@
 Live ATC24 radar stack with:
 
 - **Backend**: Node + Express + WebSocket bridge to ATC24
-- **Frontend**: React dashboard that uses **AeroNav** (`https://aeronav.space/app`) as chart/map source
+- **Frontend**: React dashboard that overlays live ATC24 aircraft on a custom radar map image
 
 ## Run backend
 

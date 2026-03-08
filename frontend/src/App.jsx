@@ -14,7 +14,7 @@ const App = () => {
     <div className="app-layout">
       <header>
         <h1>ATCgraph</h1>
-        <p className="subtitle">Live ATC24 traffic with AeroNav charts</p>
+        <p className="subtitle">Live ATC24 traffic on your custom radar map</p>
         <div>
           Socket: <span className={status}>{status}</span>
         </div>
