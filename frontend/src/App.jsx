@@ -1,39 +1,37 @@
 import { NavLink, Route, Routes } from "react-router-dom";
-import RadarMap from "./components/RadarMap.jsx";
-import FlightPlanPanel from "./components/FlightPlanPanel.jsx";
-import ControllerPanel from "./components/ControllerPanel.jsx";
-import ATISPanel from "./components/ATISPanel.jsx";
-import { useBackendSocket } from "./lib/useBackendSocket.js";
+import HomePage from "./components/HomePage.jsx";
+import FlightPlannerPage from "./components/FlightPlannerPage.jsx";
+import AirportIntelPage from "./components/AirportIntelPage.jsx";
+import TaxiPlannerPage from "./components/TaxiPlannerPage.jsx";
+import LiveDashboardPage from "./components/LiveDashboardPage.jsx";
+import LogbookPage from "./components/LogbookPage.jsx";
 
 const App = () => {
-  const { aircraftList, flightplans, controllers, atis, status, sourceStatus } = useBackendSocket();
-
   return (
-    <div className="app-layout">
-      <header>
-        <h1>ATCgraph</h1>
-        <p className="subtitle">Live ATC24 traffic on your custom radar map</p>
-        <div className="status-row">
-          <span>
-            Client Socket: <strong className={status}>{status}</strong>
-          </span>
-          <span>
-            ATC24 Source: <strong className={sourceStatus?.status || "unknown"}>{sourceStatus?.status || "unknown"}</strong>
-          </span>
+    <div className="app-shell">
+      <aside className="sidebar">
+        <div className="brand-block">
+          <p className="brand-kicker">MSFS 2024 OPS</p>
+          <h1>VectorOps</h1>
+          <p className="brand-copy">One tab for planning, flying and debriefing every mission.</p>
         </div>
-        <nav>
-          <NavLink to="/">Radar</NavLink>
-          <NavLink to="/flightplans">Flight Plans</NavLink>
-          <NavLink to="/controllers">Controllers</NavLink>
-          <NavLink to="/atis">ATIS</NavLink>
+        <nav className="menu">
+          <NavLink to="/">Home</NavLink>
+          <NavLink to="/planner">Flight Planner</NavLink>
+          <NavLink to="/airports">Airport Intel</NavLink>
+          <NavLink to="/taxi">Taxi</NavLink>
+          <NavLink to="/live">Live Dashboard</NavLink>
+          <NavLink to="/logbook">Logbook</NavLink>
         </nav>
-      </header>
-      <main>
+      </aside>
+      <main className="main-view">
         <Routes>
-          <Route path="/" element={<RadarMap aircraft={aircraftList} />} />
-          <Route path="/flightplans" element={<FlightPlanPanel flightplans={flightplans} />} />
-          <Route path="/controllers" element={<ControllerPanel controllers={controllers} />} />
-          <Route path="/atis" element={<ATISPanel atis={atis} />} />
+          <Route path="/" element={<HomePage />} />
+          <Route path="/planner" element={<FlightPlannerPage />} />
+          <Route path="/airports" element={<AirportIntelPage />} />
+          <Route path="/taxi" element={<TaxiPlannerPage />} />
+          <Route path="/live" element={<LiveDashboardPage />} />
+          <Route path="/logbook" element={<LogbookPage />} />
         </Routes>
       </main>
     </div>
